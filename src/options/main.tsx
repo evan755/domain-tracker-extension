@@ -1,5 +1,5 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import {StrictMode} from 'react'
+import {createRoot} from 'react-dom/client'
 import Options from './Options'
 
 const container = document.getElementById('options-root')
@@ -9,6 +9,6 @@ if (!container) {
 
 createRoot(container).render(
     <StrictMode>
-        <Options />
+        <Options/>
     </StrictMode>
 )

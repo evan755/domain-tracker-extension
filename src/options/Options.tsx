@@ -1,48 +1,109 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
+
+interface LocalConfig {
+    apiUrl?: string;
+    apiKey?: string;
+}
 
 export default function Options() {
     const [apiUrl, setApiUrl] = useState('');
     const [apiKey, setApiKey] = useState('');
-    const [saved, setSaved] = useState(false);
-    const [showKey, setShowKey] = useState(false);
+    const [status, setStatus] = useState<{ text: string; isError: boolean }>({text: '', isError: false});
 
     useEffect(() => {
-        chrome.storage.local.get(['apiUrl', 'apiKey'], (result: Record<string, unknown>) => {
-            if (typeof result.apiUrl === 'string') setApiUrl(result.apiUrl);
-            if (typeof result.apiKey === 'string') setApiKey(result.apiKey);
+        chrome.storage.local.get(['apiUrl', 'apiKey'], (config: LocalConfig) => {
+            if (config.apiUrl) setApiUrl(config.apiUrl);
+            if (config.apiKey) setApiKey(config.apiKey);
         });
     }, []);
 
     const handleSave = () => {
-        chrome.storage.local.set({ apiUrl: apiUrl.trim().replace(/\/$/, ""), apiKey: apiKey.trim() }, () => {
-            setSaved(true);
-            setTimeout(() => setSaved(false), 2000);
+        if (!apiUrl.trim()) {
+            setStatus({text: '⚠️ API 接口基础地址不能为空', isError: true});
+            return;
+        }
+        if (!apiKey.trim()) {
+            setStatus({text: '⚠️ API Key 不能为空', isError: true});
+            return;
+        }
+
+        const normalizedUrl = apiUrl.trim().replace(/\/+$/, '');
+
+        chrome.storage.local.set({apiUrl: normalizedUrl, apiKey: apiKey.trim()}, () => {
+            setStatus({text: '✅ 配置已保存', isError: false});
+            setApiUrl(normalizedUrl);
         });
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-50">
-            <div className="bg-white p-8 rounded-lg shadow-sm w-96 border border-gray-100">
-                <h2 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-3 mb-5">API 安全网关配置</h2>
-                <div className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1.5">API 接口基地址 (Base URL)</label>
-                        <input type="text" value={apiUrl} onChange={e => setApiUrl(e.target.value)} placeholder="例如: http://localhost:3000" className="w-full text-sm p-2 border border-gray-300 rounded focus:border-blue-500 focus:outline-none" />
-                    </div>
-                    <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1.5">API Key (鉴权 Token)</label>
-                        <div className="relative">
-                            <input type={showKey ? 'text' : 'password'} value={apiKey} onChange={e => setApiKey(e.target.value)} placeholder="输入您的后端通信密钥" className="w-full text-sm p-2 pr-12 border border-gray-300 rounded focus:border-blue-500 focus:outline-none" />
-                            <button type="button" onClick={() => setShowKey(!showKey)} className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-400 hover:text-gray-600 px-1.5 py-1">
-                                {showKey ? '隐藏' : '显示'}
-                            </button>
-                        </div>
-                    </div>
-                    <button onClick={handleSave} className={`w-full font-medium py-2 rounded text-sm transition ${saved ? 'bg-emerald-600 text-white' : 'bg-blue-600 text-white'}`}>
-                        {saved ? '✅ 配置已成功保存' : '保存系统配置'}
-                    </button>
-                </div>
+        <div className="w-[340px] p-4 bg-white text-gray-800 flex flex-col">
+            <div className="flex items-center border-b border-gray-100 pb-2 mb-3">
+                <h3 className="text-sm font-bold text-blue-600">配置中心</h3>
             </div>
+
+            <div className="mb-3">
+                <label className="block text-[11px] font-semibold text-gray-500 mb-1">
+                    API 接口基础地址 <span className="text-red-400">*</span>
+                </label>
+                <input
+                    type="text"
+                    value={apiUrl}
+                    onChange={e => {
+                        setApiUrl(e.target.value);
+                        if (status.text) setStatus({text: '', isError: false});
+                    }}
+                    placeholder="https://your-api.example.com"
+                    className={`w-full text-xs p-2 border rounded focus:outline-none transition-colors ${
+                        !apiUrl.trim()
+                            ? 'border-red-400 focus:border-red-500 bg-red-50/20'
+                            : 'border-gray-200 focus:border-blue-500'
+                    }`}
+                />
+                <p className="mt-1 text-[10px] text-gray-400">同步时请求 {'{地址}'}/api/save-domains</p>
+            </div>
+
+            <div className="mb-4">
+                <label className="block text-[11px] font-semibold text-gray-500 mb-1">
+                    API Key <span className="text-red-400">*</span>
+                </label>
+                <input
+                    type="password"
+                    value={apiKey}
+                    onChange={e => {
+                        setApiKey(e.target.value);
+                        if (status.text) setStatus({text: '', isError: false});
+                    }}
+                    placeholder="输入你的 API Key"
+                    className={`w-full text-xs p-2 border rounded focus:outline-none transition-colors ${
+                        !apiKey.trim()
+                            ? 'border-red-400 focus:border-red-500 bg-red-50/20'
+                            : 'border-gray-200 focus:border-blue-500'
+                    }`}
+                />
+                <p className="mt-1 text-[10px] text-gray-400">以 Bearer Token 形式发送</p>
+            </div>
+
+            <button
+                onClick={handleSave}
+                disabled={!apiUrl.trim() || !apiKey.trim()}
+                className={`w-full text-white font-medium py-2 rounded text-xs transition-all ${
+                    !apiUrl.trim() || !apiKey.trim()
+                        ? 'bg-gray-300 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]'
+                }`}
+            >
+                保存配置
+            </button>
+
+            {status.text && (
+                <div className={`mt-2 text-center text-xs p-1.5 rounded transition-all border ${
+                    status.isError
+                        ? 'text-red-500 bg-red-50 border-red-100'
+                        : 'text-emerald-600 bg-emerald-50 border-emerald-100'
+                }`}>
+                    {status.text}
+                </div>
+            )}
         </div>
     );
 }
