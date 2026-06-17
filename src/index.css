@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+    --color-brand-primary: #3b82f6;
+    --color-brand-success: #10b981;
+    --animate-fade-in: fade-in 0.2s ease-out;
+}
