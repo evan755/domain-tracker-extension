@@ -1,107 +1,122 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-body { margin: 0; padding: 20px; background: #ccc; display: flex; gap: 20px; }
-.icon { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-canvas { border: 1px solid #999; }
-</style>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #ccc;
+            display: flex;
+            gap: 20px;
+        }
+
+        .icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        canvas {
+            border: 1px solid #999;
+        }
+    </style>
 </head>
 <body>
 <div class="icon">
-  <canvas id="c16" width="16" height="16"></canvas>
-  <span>16x16</span>
+    <canvas height="16" id="c16" width="16"></canvas>
+    <span>16x16</span>
 </div>
 <div class="icon">
-  <canvas id="c48" width="48" height="48"></canvas>
-  <span>48x48</span>
+    <canvas height="48" id="c48" width="48"></canvas>
+    <span>48x48</span>
 </div>
 <div class="icon">
-  <canvas id="c128" width="128" height="128"></canvas>
-  <span>128x128</span>
+    <canvas height="128" id="c128" width="128"></canvas>
+    <span>128x128</span>
 </div>
 <script>
-function drawIcon(canvas) {
-  const ctx = canvas.getContext('2d');
-  const s = canvas.width;
-  const r = s * 0.1875;
+    function drawIcon(canvas) {
+        const ctx = canvas.getContext('2d');
+        const s = canvas.width;
+        const r = s * 0.1875;
 
-  // Background with rounded corners
-  ctx.fillStyle = '#1a1a2e';
-  ctx.beginPath();
-  ctx.moveTo(r, 0);
-  ctx.lineTo(s - r, 0);
-  ctx.quadraticCurveTo(s, 0, s, r);
-  ctx.lineTo(s, s - r);
-  ctx.quadraticCurveTo(s, s, s - r, s);
-  ctx.lineTo(r, s);
-  ctx.quadraticCurveTo(0, s, 0, s - r);
-  ctx.lineTo(0, r);
-  ctx.quadraticCurveTo(0, 0, r, 0);
-  ctx.fill();
+        // Background with rounded corners
+        ctx.fillStyle = '#1a1a2e';
+        ctx.beginPath();
+        ctx.moveTo(r, 0);
+        ctx.lineTo(s - r, 0);
+        ctx.quadraticCurveTo(s, 0, s, r);
+        ctx.lineTo(s, s - r);
+        ctx.quadraticCurveTo(s, s, s - r, s);
+        ctx.lineTo(r, s);
+        ctx.quadraticCurveTo(0, s, 0, s - r);
+        ctx.lineTo(0, r);
+        ctx.quadraticCurveTo(0, 0, r, 0);
+        ctx.fill();
 
-  // Globe
-  const cx = s * 0.5;
-  const cy = s * 0.45;
-  const globeR = s * 0.22;
+        // Globe
+        const cx = s * 0.5;
+        const cy = s * 0.45;
+        const globeR = s * 0.22;
 
-  ctx.strokeStyle = '#e94560';
-  ctx.lineWidth = Math.max(1, s * 0.025);
-  ctx.beginPath();
-  ctx.arc(cx, cy, globeR, 0, Math.PI * 2);
-  ctx.stroke();
+        ctx.strokeStyle = '#e94560';
+        ctx.lineWidth = Math.max(1, s * 0.025);
+        ctx.beginPath();
+        ctx.arc(cx, cy, globeR, 0, Math.PI * 2);
+        ctx.stroke();
 
-  ctx.beginPath();
-  ctx.moveTo(cx - globeR, cy);
-  ctx.lineTo(cx + globeR, cy);
-  ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx - globeR, cy);
+        ctx.lineTo(cx + globeR, cy);
+        ctx.stroke();
 
-  ctx.beginPath();
-  ctx.moveTo(cx, cy - globeR);
-  ctx.lineTo(cx, cy + globeR);
-  ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - globeR);
+        ctx.lineTo(cx, cy + globeR);
+        ctx.stroke();
 
-  // Checkmark badge
-  const checkCx = s * 0.72;
-  const checkCy = s * 0.72;
-  const checkR = s * 0.14;
+        // Checkmark badge
+        const checkCx = s * 0.72;
+        const checkCy = s * 0.72;
+        const checkR = s * 0.14;
 
-  ctx.fillStyle = '#0f3460';
-  ctx.beginPath();
-  ctx.arc(checkCx, checkCy, checkR, 0, Math.PI * 2);
-  ctx.fill();
+        ctx.fillStyle = '#0f3460';
+        ctx.beginPath();
+        ctx.arc(checkCx, checkCy, checkR, 0, Math.PI * 2);
+        ctx.fill();
 
-  ctx.strokeStyle = '#e94560';
-  ctx.lineWidth = Math.max(1, s * 0.035);
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.beginPath();
-  ctx.moveTo(checkCx - checkR * 0.5, checkCy);
-  ctx.lineTo(checkCx - checkR * 0.1, checkCy + checkR * 0.4);
-  ctx.lineTo(checkCx + checkR * 0.5, checkCy - checkR * 0.4);
-  ctx.stroke();
-}
+        ctx.strokeStyle = '#e94560';
+        ctx.lineWidth = Math.max(1, s * 0.035);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(checkCx - checkR * 0.5, checkCy);
+        ctx.lineTo(checkCx - checkR * 0.1, checkCy + checkR * 0.4);
+        ctx.lineTo(checkCx + checkR * 0.5, checkCy - checkR * 0.4);
+        ctx.stroke();
+    }
 
-drawIcon(document.getElementById('c16'));
-drawIcon(document.getElementById('c48'));
-drawIcon(document.getElementById('c128'));
+    drawIcon(document.getElementById('c16'));
+    drawIcon(document.getElementById('c48'));
+    drawIcon(document.getElementById('c128'));
 
-// Download function
-function download(canvas, name) {
-  const link = document.createElement('a');
-  link.download = name;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-}
+    // Download function
+    function download(canvas, name) {
+        const link = document.createElement('a');
+        link.download = name;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
 
-// Add download buttons
-document.querySelectorAll('.icon').forEach((div, i) => {
-  const sizes = [16, 48, 128];
-  const btn = document.createElement('button');
-  btn.textContent = 'Download';
-  btn.onclick = () => download(document.getElementById('c' + sizes[i]), 'icon' + sizes[i] + '.png');
-  div.appendChild(btn);
-});
+    // Add download buttons
+    document.querySelectorAll('.icon').forEach((div, i) => {
+        const sizes = [16, 48, 128];
+        const btn = document.createElement('button');
+        btn.textContent = 'Download';
+        btn.onclick = () => download(document.getElementById('c' + sizes[i]), 'icon' + sizes[i] + '.png');
+        div.appendChild(btn);
+    });
 </script>
 </body>
 </html>
