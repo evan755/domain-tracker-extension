@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Domain Tracker Extension",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Capture all domains loaded by web pages in real-time, sync to your own server and auto-generate PAC proxy configuration files.",
+    "description": "Extension description"
+  }
+}

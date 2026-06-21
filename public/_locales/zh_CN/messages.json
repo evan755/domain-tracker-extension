@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Domain Tracker Extension",
+    "description": "扩展名称"
+  },
+  "extDescription": {
+    "message": "实时捕获网页加载的所有主域名，支持同步至自建服务器并自动生成 PAC 代理配置文件。",
+    "description": "扩展描述"
+  }
+}
