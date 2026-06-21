@@ -4,7 +4,6 @@ import {crx} from '@crxjs/vite-plugin'
 import tailwindcss from '@tailwindcss/vite'
 import manifest from './manifest.json'
 
-// 抑制 rollupOptions/rolldownOptions 的冗余警告
 const logger = createLogger()
 const originalWarn = logger.warn
 logger.warn = (msg, options) => {
